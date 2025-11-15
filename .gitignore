@@ -7,6 +7,10 @@
 .env.local
 server/.env
 
+# Database
+*.db
+*.db-journal
+
 # Build outputs
 /build
 
