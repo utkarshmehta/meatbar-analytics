@@ -1,4 +1,5 @@
 import db from '../database';
+import { RunResult } from 'sqlite3';
 
 /**
  * Calculates streaks of days with increasing meat bar consumption.
@@ -118,6 +119,30 @@ export async function getMonthlyMostEaten(): Promise<any[]> {
         reject(err);
       } else {
         resolve(rows);
+      }
+    });
+  });
+}
+
+/**
+ * Adds a new meat bar consumption to the database.
+ */
+export function addConsumption(
+  person_name: string, 
+  type: string, 
+  eaten_at: string
+): Promise<{ id: number }> {
+  const sql = 'INSERT INTO meat_bars (person_name, type, eaten_at) VALUES (?, ?, ?)';
+  
+  return new Promise((resolve, reject) => {
+    // Use function() to get 'this'
+    db.run(sql, [person_name, type, eaten_at], function(this: RunResult, err: Error | null) {
+      if (err) {
+        console.error('Error inserting meat bar:', err.message);
+        reject(err);
+      } else {
+        // Resolve with the ID of the new row
+        resolve({ id: this.lastID });
       }
     });
   });
