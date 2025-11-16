@@ -15,7 +15,6 @@ This is a Node.js, TypeScript, and SQLite backend API built as a technical assig
 
 ## How to Set Up and Run
 
-## How to Set Up and Run
 
 ### Prerequisites
 
@@ -83,16 +82,45 @@ The simplest way to run this application is using Docker, as it handles all depe
 * `POST /api/v1/consumptions`
     * Adds a new meat bar consumption event.
     * **Body (JSON):**
-        {
-          "person_name": "ashton",
-          "type": "bison",
-          "eaten_at": "2025-01-01T12:00:00.000Z"
-        }
+    ```json
+    {
+      "person_name": "ashton",
+      "type": "bison",
+      "eaten_at": "2025-01-01T12:00:00.000Z"
+    }
+    ```
 
 ### Analytics
 
 * `GET /api/v1/analytics/streaks`
     * Returns all consumption streaks, defined as consecutive days (ignoring gaps) of *increasing* daily consumption.
+    **Example Response:**
+    ```json
+    [
+      {
+        "streak_id": 2,
+        "streak_length": 3,
+        "streak_start": "2015-01-03",
+        "streak_end": "2015-01-07",
+        "streak_counts": "1, 2, 3"
+      }
+    ]
+    ```
 
 * `GET /api/v1/analytics/monthly-most`
     * For each month, returns the day of the month that had the highest number of consumptions.
+    **Example Response:**
+    ```json
+    [
+      {
+        "consumption_month": "2015-01",
+        "day_of_month": "15",
+        "daily_count": 8
+      },
+      {
+        "consumption_month": "2015-05",
+        "day_of_month": "01",
+        "daily_count": 3
+      }
+    ]
+    ```
