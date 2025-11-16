@@ -9,6 +9,15 @@ import {
 
 const app: Express = express();
 const PORT: number = parseInt(process.env.PORT || '3001');
+// Define all public endpoints for discovery
+const ALL_ENDPOINTS = [
+  { method: 'GET', path: '/api/v1/people', description: 'Returns a list of all unique people.' },
+  { method: 'GET', path: '/api/v1/consumptions', description: 'Returns all consumption events.' },
+  { method: 'POST', path: '/api/v1/consumptions', description: 'Adds a new consumption event (Requires JSON body).' },
+  { method: 'GET', path: '/api/v1/analytics/streaks', description: 'Calculates consumption streaks.' },
+  { method: 'GET', path: '/api/v1/analytics/monthly-most', description: 'Finds the day with the most consumption per month.' },
+  { method: 'GET', path: '/api/v1/health', description: 'Checks server status.' },
+];
 
 // --- Middleware ---
 app.use(cors());
@@ -18,12 +27,13 @@ app.use(express.json());
 
 /**
  * GET /
- * Default root endpoint for welcome message.
+ * Default root endpoint for welcome message and API discovery.
  */
 app.get('/', (req: Request, res: Response) => {
   res.status(200).json({ 
     message: "Welcome to the MeatBar Analytics API!",
-    endpoints: "Check /api/v1/health or the README for full list."
+    available_routes: ALL_ENDPOINTS,
+    documentation: "See README.md for full details."
   });
 });
 
