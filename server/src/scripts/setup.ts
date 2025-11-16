@@ -4,7 +4,7 @@ import csv from 'csv-parser';
 import db from '../database';
 import { RunResult } from 'sqlite3';
 
-const csvFilePath = path.resolve(__dirname, '../../../data/data.csv');
+const csvFilePath = path.resolve(__dirname, '../../data/data.csv');
 const results: any[] = [];
 
 console.log('Starting database setup...');
