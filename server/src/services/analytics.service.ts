@@ -65,3 +65,60 @@ export async function getConsumptionStreaks(): Promise<any[]> {
         });
     });
 }
+
+
+/**
+ * For each month, finds the day of the month
+ * with the highest number of consumptions.
+ */
+export async function getMonthlyMostEaten(): Promise<any[]> {
+  const sql = `
+    WITH DailyConsumption AS (
+      -- Step 1: Count consumptions for each day
+      SELECT
+        DATE(eaten_at) AS consumption_date,
+        COUNT(id) AS daily_count
+      FROM meat_bars
+      GROUP BY consumption_date
+    ),
+    MonthlyDayCounts AS (
+      -- Step 2: Extract month and day, keep the count
+      SELECT
+        STRFTIME('%Y-%m', consumption_date) AS consumption_month,
+        STRFTIME('%d', consumption_date) AS day_of_month,
+        daily_count
+      FROM DailyConsumption
+    ),
+    RankedByMonth AS (
+      -- Step 3: Rank days within each month by count, descending
+      SELECT
+        consumption_month,
+        day_of_month,
+        daily_count,
+        ROW_NUMBER() OVER (
+          PARTITION BY consumption_month 
+          ORDER BY daily_count DESC
+        ) AS rank_num
+      FROM MonthlyDayCounts
+    )
+    -- Step 4: Select only the #1 ranked day for each month
+    SELECT
+      consumption_month,
+      day_of_month,
+      daily_count
+    FROM RankedByMonth
+    WHERE rank_num = 1
+    ORDER BY consumption_month;
+  `;
+
+  return new Promise((resolve, reject) => {
+    db.all(sql, [], (err: Error | null, rows: any[]) => {
+      if (err) {
+        console.error('Error in getMonthlyMostEaten:', err.message);
+        reject(err);
+      } else {
+        resolve(rows);
+      }
+    });
+  });
+}
