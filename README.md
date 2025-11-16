@@ -8,6 +8,13 @@ This is a Node.js, TypeScript, and SQLite backend API built as a technical assig
 * **Database:** SQLite
 * **Testing:** Jest, ts-jest
 
+
+## Demo
+
+![GIF of DB set up from csv and some API routes running in the browser](demo.gif)
+
+## How to Set Up and Run
+
 ## How to Set Up and Run
 
 ### Prerequisites
