@@ -1,7 +1,8 @@
 import express, { Express, Request, Response } from 'express';
 import cors from 'cors';
 import db from './database';
-import { getConsumptionStreaks } from './services/analytics.service';
+// --- UPDATE THIS IMPORT ---
+import { getConsumptionStreaks, getMonthlyMostEaten } from './services/analytics.service';
 
 const app: Express = express();
 const PORT: number = parseInt(process.env.PORT || '3001');
@@ -94,6 +95,19 @@ app.get('/api/v1/analytics/streaks', async (req: Request, res: Response) => {
   try {
     const streaks = await getConsumptionStreaks();
     res.status(200).json(streaks);
+  } catch (err) {
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+/**
+ * GET /api/v1/analytics/monthly-most
+ * For each month, returns the day with the most consumptions.
+ */
+app.get('/api/v1/analytics/monthly-most', async (req: Request, res: Response) => {
+  try {
+    const monthlyMost = await getMonthlyMostEaten();
+    res.status(200).json(monthlyMost);
   } catch (err) {
     res.status(500).json({ error: 'Internal server error' });
   }
