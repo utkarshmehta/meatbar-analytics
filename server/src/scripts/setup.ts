@@ -34,7 +34,9 @@ function populateDatabase() {
       person_name TEXT NOT NULL,
       type TEXT NOT NULL,
       eaten_at TEXT NOT NULL,
-      FOREIGN KEY (person_name) REFERENCES people (name)
+      FOREIGN KEY (person_name) REFERENCES people (name),
+      -- UNIQUE prevent duplicates --
+      UNIQUE(person_name, type, eaten_at) 
     );
   `;
 
@@ -59,7 +61,8 @@ function populateDatabase() {
 
 function insertData() {
   const personStmt = db.prepare('INSERT OR IGNORE INTO people (name) VALUES (?)');
-  const meatBarStmt = db.prepare('INSERT INTO meat_bars (person_name, type, eaten_at) VALUES (?, ?, ?)');
+  // ---'INSERT OR IGNORE' ---
+  const meatBarStmt = db.prepare('INSERT OR IGNORE INTO meat_bars (person_name, type, eaten_at) VALUES (?, ?, ?)');
 
   let peopleInserted = 0;
   let barsInserted = 0;
