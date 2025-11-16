@@ -79,7 +79,7 @@ The simplest way to run this application is using Docker, as it handles all depe
 * `GET /api/v1/consumptions`
     * Returns a JSON array of all meat bar consumption events.
 
-* POST /api/v1/consumptions
+* `POST /api/v1/consumptions`
     * Adds a new meat bar consumption event.
     * **Body (JSON):**
     ```json
