@@ -1,7 +1,6 @@
 import express, { Express, Request, Response } from 'express';
 import cors from 'cors';
 import db from './database';
-// --- UPDATE THIS IMPORT ---
 import { getConsumptionStreaks, getMonthlyMostEaten } from './services/analytics.service';
 
 const app: Express = express();
