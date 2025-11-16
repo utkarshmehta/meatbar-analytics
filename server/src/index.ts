@@ -37,6 +37,24 @@ app.get('/api/v1/people', (req: Request, res: Response) => {
   });
 });
 
+/**
+ * GET /api/v1/consumptions
+ * Returns all meat bar consumptions from the database.
+ */
+app.get('/api/v1/consumptions', (req: Request, res: Response) => {
+  const sql = 'SELECT * FROM meat_bars';
+
+  db.all(sql, [], (err: Error | null, rows: any[]) => {
+    if (err) {
+      console.error('Error fetching meat bars:', err.message);
+      res.status(500).json({ error: 'Internal server error' });
+      return;
+    }
+
+    res.status(200).json(rows);
+  });
+});
+
 // --- Start the Server ---
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
