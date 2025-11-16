@@ -1,0 +1,12 @@
+# Ignore Node modules for faster builds
+node_modules
+server/node_modules
+
+# Ignore local development files
+.env
+.DS_Store
+*.log
+npm-debug.log
+
+# Ignore our database file (which is built at runtime)
+*.db

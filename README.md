@@ -48,6 +48,19 @@ All critical logic is unit-tested with Jest.
     # Run all tests
     npm run test
 
+### 5. Run via Docker (Recommended for Reviewers)
+
+The simplest way to run this application is using Docker, as it handles all dependencies automatically.
+
+1.  **Build the image:**
+        docker build -t meatbar-analytics .
+
+2.  **Run the container:** (The container automatically builds the SQLite database on startup)
+        docker run -p 3001:3001 meatbar-analytics
+
+3.  The API will be available at `http://localhost:3001/api/v1/people`
+
+
 ## API Endpoints
 
 ### People
