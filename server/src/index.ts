@@ -1,6 +1,7 @@
 import express, { Express, Request, Response } from 'express';
 import cors from 'cors';
 import db from './database';
+import { getConsumptionStreaks } from './services/analytics.service';
 
 const app: Express = express();
 const PORT: number = parseInt(process.env.PORT || '3001');
@@ -60,10 +61,8 @@ app.get('/api/v1/consumptions', (req: Request, res: Response) => {
  * Adds a new meat bar consumption to the database.
  */
 app.post('/api/v1/consumptions', (req: Request, res: Response) => {
-  // Get data from the request body
   const { person_name, type, eaten_at } = req.body;
 
-  // Simple validation
   if (!person_name || !type || !eaten_at) {
     return res.status(400).json({ 
       error: 'Missing required fields: person_name, type, eaten_at' 
@@ -72,16 +71,12 @@ app.post('/api/v1/consumptions', (req: Request, res: Response) => {
 
   const sql = 'INSERT INTO meat_bars (person_name, type, eaten_at) VALUES (?, ?, ?)';
   
-  // Use db.run for INSERT, UPDATE, or DELETE
   db.run(sql, [person_name, type, eaten_at], function(err) {
     if (err) {
-      // This will catch foreign key errors if 'person_name' doesn't exist
       console.error('Error inserting meat bar:', err.message);
       return res.status(500).json({ error: 'Internal server error' });
     }
 
-    // Return the newly created record
-    // 'this.lastID' is the 'id' of the row we just inserted
     res.status(201).json({
       id: this.lastID,
       person_name: person_name,
@@ -91,6 +86,18 @@ app.post('/api/v1/consumptions', (req: Request, res: Response) => {
   });
 });
 
+/**
+ * GET /api/v1/analytics/streaks
+ * Returns all consumption streaks.
+ */
+app.get('/api/v1/analytics/streaks', async (req: Request, res: Response) => {
+  try {
+    const streaks = await getConsumptionStreaks();
+    res.status(200).json(streaks);
+  } catch (err) {
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
 
 // --- Start the Server ---
 app.listen(PORT, () => {
