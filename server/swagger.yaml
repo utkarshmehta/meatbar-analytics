@@ -1,0 +1,100 @@
+openapi: 3.0.0
+info:
+  title: MeatBar Analytics Backend API
+  version: 1.0.0
+  description: |
+    RESTful API built with TypeScript, Express, and SQLite to process and expose data 
+    about meat bar consumption. The setup is containerized via Docker for ease of review.
+  contact:
+    name: Utkarsh Mehta
+servers:
+  - url: /api/v1
+    description: Base API Route
+tags: 
+  - name: System
+    description: Utility endpoints for application health.
+
+paths:
+  /health: # Health Check Endpoint
+    get:
+      tags:
+        - System
+      summary: Returns the status of the API server.
+      responses:
+        '200':
+          description: Server is running.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: {type: string, example: ok}
+
+  /people:
+    get:
+      tags:
+        - People
+      summary: Retrieve a list of all unique people.
+      responses:
+        '200':
+          description: A list of unique people.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name: {type: string}
+  
+  /consumptions:
+    get:
+      tags:
+        - Consumptions
+      summary: Retrieve all raw meat bar consumption records (25 total).
+      responses:
+        '200':
+          description: List of all consumption events.
+    post:
+      tags:
+        - Consumptions
+      summary: Add a new consumption event.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                person_name: {type: string, example: bob}
+                type: {type: string, example: beef}
+                eaten_at: {type: string, format: date-time, example: 2025-11-16T12:00:00Z}
+      responses:
+        '201':
+          description: Consumption successfully added.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id: {type: integer}
+                  person_name: {type: string}
+                  type: {type: string}
+
+  /analytics/streaks:
+    get:
+      tags:
+        - Analytics
+      summary: Calculates and returns streaks of increasing daily consumption.
+      responses:
+        '200':
+          description: List of calculated streaks.
+  
+  /analytics/monthly-most:
+    get:
+      tags:
+        - Analytics
+      summary: Finds the busiest day of the month for consumption, per month.
+      responses:
+        '200':
+          description: List of the busiest day for each month.
