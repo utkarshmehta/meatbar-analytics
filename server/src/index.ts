@@ -1,7 +1,11 @@
 import express, { Express, Request, Response } from 'express';
 import cors from 'cors';
 import db from './database';
-import { getConsumptionStreaks, getMonthlyMostEaten } from './services/analytics.service';
+import { 
+  getConsumptionStreaks, 
+  getMonthlyMostEaten, 
+  addConsumption 
+} from './services/analytics.service';
 
 const app: Express = express();
 const PORT: number = parseInt(process.env.PORT || '3001');
@@ -11,6 +15,17 @@ app.use(cors());
 app.use(express.json());
 
 // --- Routes ---
+
+/**
+ * GET /
+ * Default root endpoint for welcome message.
+ */
+app.get('/', (req: Request, res: Response) => {
+  res.status(200).json({ 
+    message: "Welcome to the MeatBar Analytics API!",
+    endpoints: "Check /api/v1/health or the README for full list."
+  });
+});
 
 /**
  * GET /api/v1/health
@@ -60,7 +75,7 @@ app.get('/api/v1/consumptions', (req: Request, res: Response) => {
  * POST /api/v1/consumptions
  * Adds a new meat bar consumption to the database.
  */
-app.post('/api/v1/consumptions', (req: Request, res: Response) => {
+app.post('/api/v1/consumptions', async (req: Request, res: Response) => {
   const { person_name, type, eaten_at } = req.body;
 
   if (!person_name || !type || !eaten_at) {
@@ -69,21 +84,18 @@ app.post('/api/v1/consumptions', (req: Request, res: Response) => {
     });
   }
 
-  const sql = 'INSERT INTO meat_bars (person_name, type, eaten_at) VALUES (?, ?, ?)';
-  
-  db.run(sql, [person_name, type, eaten_at], function(err) {
-    if (err) {
-      console.error('Error inserting meat bar:', err.message);
-      return res.status(500).json({ error: 'Internal server error' });
-    }
-
+  try {
+    const newConsumption = await addConsumption(person_name, type, eaten_at);
+    
     res.status(201).json({
-      id: this.lastID,
+      id: newConsumption.id,
       person_name: person_name,
       type: type,
       eaten_at: eaten_at
     });
-  });
+  } catch (err) {
+    res.status(500).json({ error: 'Internal server error' });
+  }
 });
 
 /**
@@ -114,5 +126,5 @@ app.get('/api/v1/analytics/monthly-most', async (req: Request, res: Response) =>
 
 // --- Start the Server ---
 app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`Server is running. Check health at http://localhost:${PORT}/api/v1/health`);
 });
