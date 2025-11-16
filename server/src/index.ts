@@ -136,5 +136,5 @@ app.get('/api/v1/analytics/monthly-most', async (req: Request, res: Response) =>
 
 // --- Start the Server ---
 app.listen(PORT, () => {
-  console.log(`Server is running. Check health at http://localhost:${PORT}/api/v1/health`);
+  console.log(`Server is running at http://localhost:${PORT}. Check health at http://localhost:${PORT}/api/v1/health`);
 });
