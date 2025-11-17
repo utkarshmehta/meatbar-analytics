@@ -69,6 +69,11 @@ The simplest way to run this application is using Docker, as it handles all depe
 
 ## API Endpoints
 
+### Health
+
+* **`GET /api/v1/health`**
+    * Returns `{"status": "ok"}`. Used to verify the server is running.
+
 ### People
 
 * `GET /api/v1/people`

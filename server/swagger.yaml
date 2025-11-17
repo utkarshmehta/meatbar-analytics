@@ -51,7 +51,7 @@ paths:
     get:
       tags:
         - Consumptions
-      summary: Retrieve all raw meat bar consumption records (25 total).
+      summary: Retrieve all raw meat bar consumption records.
       responses:
         '200':
           description: List of all consumption events.
