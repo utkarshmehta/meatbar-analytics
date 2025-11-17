@@ -8,71 +8,81 @@ This is a Node.js, TypeScript, and SQLite backend API built as a technical assig
 * **Database:** SQLite
 * **Testing:** Jest, ts-jest
 
-
 ## Demo
 
 ![GIF of DB set up from csv and some API routes running in the browser](demo.gif)
 
 ![GIF of working swagger endpoints](demo_1.gif)
-## How to Set Up and Run
 
+## 🔗 Interactive Documentation
+
+The full, interactive OpenAPI (Swagger) documentation is available at `http://localhost:3001/api-docs` after running the application.
+
+---
+
+## How to Set Up and Run
 
 ### Prerequisites
 
 * Node.js (v16 or newer recommended)
+* Docker (Recommended for easy setup)
 
-### 1. Clone & Install
+### 1. Run via Docker (Recommended for Reviewers)
 
+This is the simplest way to run the application, as it handles all setup and dependencies automatically.
+
+1.  **Build the image:**
+    ```bash
+    docker build -t meatbar-analytics .
+    ```
+
+2.  **Run the container:** (The container automatically builds the SQLite database on startup)
+    ```bash
+    docker run -p 3001:3001 meatbar-analytics
+    ```
+
+3.  The API will be available at `http://localhost:3001/` and the interactive documentation at `http://localhost:3001/api-docs`.
+
+### 2. Manual Setup (Without Docker)
+
+If you prefer to run the application manually:
+
+1.  **Clone & Install:**
+    ```bash
     # 1. Clone the repository
-    git clone https://github.com/utkarshmehta/meatbar-analytics.git
+    git clone [https://github.com/utkarshmehta/meatbar-analytics.git](https://github.com/utkarshmehta/meatbar-analytics.git)
 
     # 2. Navigate to the server directory
     cd meatbar-analytics/server
 
     # 3. Install all dependencies
     npm install
+    ```
 
-### 2. Build the Database
-
-The project includes a setup script to parse the data.csv file and populate the database.db file. This only needs to be run once.
-
+2.  **Build the Database:**
+    ```bash
+    # This only needs to be run once.
     # From the /server directory
     npx ts-node src/scripts/setup.ts
+    ```
 
-### 3. Run the Application
-
-Once the database is built, you can start the server.
-
+3.  **Run the Application:**
+    ```bash
     # Run in development mode (with auto-reload)
     npm run dev
+    ```
+    The server will be running on `http://localhost:3001`
 
-The server will be running on `http://localhost:3001`
-
-### 4. Run Tests
-
-All critical logic is unit-tested with Jest.
-
+4.  **Run Tests:**
+    ```bash
     # Run all tests
     npm run test
-
-### 5. Run via Docker (Recommended for Reviewers)
-
-The simplest way to run this application is using Docker, as it handles all dependencies automatically.
-
-1.  **Build the image:**
-        docker build -t meatbar-analytics .
-
-2.  **Run the container:** (The container automatically builds the SQLite database on startup)
-        docker run -p 3001:3001 meatbar-analytics
-
-3.  The API will be available at `http://localhost:3001/api/v1/people`
-
-
+    ```
 ## API Endpoints
 
 ### Health
 
-* **`GET /api/v1/health`**
+* `GET /api/v1/health`
     * Returns `{"status": "ok"}`. Used to verify the server is running.
 
 ### People
@@ -100,7 +110,7 @@ The simplest way to run this application is using Docker, as it handles all depe
 
 * `GET /api/v1/analytics/streaks`
     * Returns all consumption streaks, defined as consecutive days (ignoring gaps) of *increasing* daily consumption.
-    **Example Response:**
+    * **Example Response:**
     ```json
     [
       {
@@ -115,7 +125,7 @@ The simplest way to run this application is using Docker, as it handles all depe
 
 * `GET /api/v1/analytics/monthly-most`
     * For each month, returns the day of the month that had the highest number of consumptions.
-    **Example Response:**
+    * **Example Response:**
     ```json
     [
       {
