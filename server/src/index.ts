@@ -6,34 +6,47 @@ import {
   getMonthlyMostEaten, 
   addConsumption 
 } from './services/analytics.service';
+// --- ADD SWAGGER IMPORTS ---
+import swaggerUi from 'swagger-ui-express';
+import YAML from 'yamljs';
+import path from 'path';
 
 const app: Express = express();
 const PORT: number = parseInt(process.env.PORT || '3001');
-// Define all public endpoints for discovery
-const ALL_ENDPOINTS = [
-  { method: 'GET', path: '/api/v1/people', description: 'Returns a list of all unique people.' },
-  { method: 'GET', path: '/api/v1/consumptions', description: 'Returns all consumption events.' },
-  { method: 'POST', path: '/api/v1/consumptions', description: 'Adds a new consumption event (Requires JSON body).' },
-  { method: 'GET', path: '/api/v1/analytics/streaks', description: 'Calculates consumption streaks.' },
-  { method: 'GET', path: '/api/v1/analytics/monthly-most', description: 'Finds the day with the most consumption per month.' },
-  { method: 'GET', path: '/api/v1/health', description: 'Checks server status.' },
-];
 
 // --- Middleware ---
 app.use(cors());
 app.use(express.json());
 
-// --- Routes ---
+// --- SWAGGER SETUP ---
+// Load the OpenAPI spec file
+const swaggerPath = path.resolve(__dirname, '../swagger.yaml');
+const swaggerDocument = YAML.load(swaggerPath);
 
+// Host the Swagger UI at /api-docs
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+// --- END SWAGGER SETUP ---
+
+
+// --- Routes ---
 /**
  * GET /
  * Default root endpoint for welcome message and API discovery.
  */
 app.get('/', (req: Request, res: Response) => {
+  const ALL_ENDPOINTS = [
+    { method: 'GET', path: '/api/v1/people', description: 'Returns a list of all unique people.' },
+    { method: 'GET', path: '/api/v1/consumptions', description: 'Returns all consumption events.' },
+    { method: 'POST', path: '/api/v1/consumptions', description: 'Adds a new consumption event.' },
+    { method: 'GET', path: '/api/v1/analytics/streaks', description: 'Calculates consumption streaks.' },
+    { method: 'GET', path: '/api/v1/analytics/monthly-most', description: 'Finds the day with the most consumption per month.' },
+    { method: 'GET', path: '/api/v1/health', description: 'Checks server status.' },
+  ];
+
   res.status(200).json({ 
     message: "Welcome to the MeatBar Analytics API!",
     available_routes: ALL_ENDPOINTS,
-    documentation: "See README.md for full details."
+    documentation: "See /api-docs or README.md for full details."
   });
 });
 
@@ -42,7 +55,7 @@ app.get('/', (req: Request, res: Response) => {
  * Health check endpoint.
  */
 app.get('/api/v1/health', (req: Request, res: Response) => {
-  res.status(200).json({ status: 'ok' });
+  res.status(200).json({ status: 'OK' });
 });
 
 /**
@@ -136,5 +149,5 @@ app.get('/api/v1/analytics/monthly-most', async (req: Request, res: Response) =>
 
 // --- Start the Server ---
 app.listen(PORT, () => {
-  console.log(`Server is running at http://localhost:${PORT}. Check health at http://localhost:${PORT}/api/v1/health`);
+  console.log(`Server is running. Check health at http://localhost:${PORT}/api/v1/health`);
 });
