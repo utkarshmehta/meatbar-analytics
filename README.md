@@ -43,7 +43,7 @@ This is the simplest way to run the application, as it handles all setup and dep
 
 3.  The API will be available at `http://localhost:3001/` and the interactive documentation at `http://localhost:3001/api-docs`.
 
-## Testing DEMO
+## Docker DEMO
 
 ![Docker Demo](docker_demo.gif)
 
@@ -160,4 +160,5 @@ From the `server/` directory, you can run the following commands:
             "daily_count": 3
           }
         ]
+
         ```
