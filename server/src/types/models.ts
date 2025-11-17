@@ -24,3 +24,9 @@ export interface MonthlyMost {
   day_of_month: string;
   daily_count: number;
 }
+
+export interface RawCsvRow {
+  person: string;
+  'meat-bar-type': string;
+  date: string;
+}

@@ -3,9 +3,11 @@ import path from 'path';
 import csv from 'csv-parser';
 import db from '../database';
 import { RunResult } from 'sqlite3';
+import { RawCsvRow } from '../types/models';
+
 
 const csvFilePath = path.resolve(__dirname, '../../data/data.csv');
-const results: any[] = [];
+const results: RawCsvRow[] = [];
 
 console.log('Starting database setup...');
 
