@@ -95,6 +95,15 @@ From the `server/` directory, you can run the following commands:
     ```bash
     npm run format
     ```
+## Key Implementation Assumptions
+
+- Uniqueness & Data Integrity: To prevent duplicate entries during the initial CSV load and subsequent POST requests, a unique constraint is enforced on the combination of (person_name, type, eaten_at) in the meat_bars table.
+
+- Data Structure: As permitted by the requirements, the database uses a lightweight, semi-denormalized structure, linking consumption records to people directly by person_name (a string lookup) rather than a separate integer foreign key.
+
+- Time Zone Handling: All date and time fields (eaten_at) are stored and queried using standard SQLite date functions based on the raw UTC text string from the source data.
+
+- Consumption Streaks: The streak calculation strictly ignores any days with zero consumption, as required by the business logic.
 ## Testing DEMO
 
 ![Unit Testing](test.gif)
@@ -162,3 +171,4 @@ From the `server/` directory, you can run the following commands:
         ]
 
         ```
+
