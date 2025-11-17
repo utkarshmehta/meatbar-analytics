@@ -13,6 +13,7 @@ This is a Node.js, TypeScript, and SQLite backend API built as a technical assig
 
 ![GIF of DB set up from csv and some API routes running in the browser](demo.gif)
 
+![GIF of working swagger endpoints](demo_1.gif)
 ## How to Set Up and Run
 
 
