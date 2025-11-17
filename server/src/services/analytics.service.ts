@@ -1,3 +1,4 @@
+import { Streak, MonthlyMost } from '../types/models';
 import db from '../database';
 import { RunResult } from 'sqlite3';
 
@@ -6,7 +7,7 @@ import { RunResult } from 'sqlite3';
  * A streak is a sequence of days where each day's consumption
  * is greater than the previous day's.
  */
-export async function getConsumptionStreaks(): Promise<any[]> {
+export async function getConsumptionStreaks(): Promise<Streak[]> {
     // This is a complex SQL query. We'll explain it below.
     const sql = `
     WITH DailyConsumption AS (
@@ -72,7 +73,7 @@ export async function getConsumptionStreaks(): Promise<any[]> {
  * For each month, finds the day of the month
  * with the highest number of consumptions.
  */
-export async function getMonthlyMostEaten(): Promise<any[]> {
+export async function getMonthlyMostEaten(): Promise<MonthlyMost[]> {
   const sql = `
     WITH DailyConsumption AS (
       -- Step 1: Count consumptions for each day

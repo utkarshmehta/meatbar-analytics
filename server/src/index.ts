@@ -1,4 +1,5 @@
 import express, { Express, Request, Response } from 'express';
+import { Person, Consumption } from './types/models';
 import cors from 'cors';
 import db from './database';
 import { 
@@ -65,7 +66,7 @@ app.get('/api/v1/health', (req: Request, res: Response) => {
 app.get('/api/v1/people', (req: Request, res: Response) => {
   const sql = 'SELECT * FROM people';
 
-  db.all(sql, [], (err: Error | null, rows: any[]) => {
+  db.all(sql, [], (err: Error | null, rows: Person[]) => {
     if (err) {
       console.error('Error fetching people:', err.message);
       res.status(500).json({ error: 'Internal server error' });
@@ -83,7 +84,7 @@ app.get('/api/v1/people', (req: Request, res: Response) => {
 app.get('/api/v1/consumptions', (req: Request, res: Response) => {
   const sql = 'SELECT * FROM meat_bars';
 
-  db.all(sql, [], (err: Error | null, rows: any[]) => {
+  db.all(sql, [], (err: Error | null, rows: Consumption[]) => {
     if (err) {
       console.error('Error fetching meat bars:', err.message);
       res.status(500).json({ error: 'Internal server error' });
