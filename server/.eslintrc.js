@@ -8,9 +8,5 @@ module.exports = {
   parserOptions: {
     ecmaVersion: 2020, // Allows for the parsing of modern ECMAScript features
     sourceType: 'module', // Allows for the use of imports
-  },
-  rules: {
-    // You can add or override rules here
-    // e.g., "@typescript-eslint/no-explicit-any": "off"
-  },
+  }
 };
