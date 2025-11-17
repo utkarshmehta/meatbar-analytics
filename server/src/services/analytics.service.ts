@@ -8,8 +8,8 @@ import { RunResult } from 'sqlite3';
  * is greater than the previous day's.
  */
 export async function getConsumptionStreaks(): Promise<Streak[]> {
-    // This is a complex SQL query. We'll explain it below.
-    const sql = `
+  // This is a complex SQL query. We'll explain it below.
+  const sql = `
     WITH DailyConsumption AS (
       -- Step 1: Count consumptions for each day
       SELECT
@@ -55,19 +55,18 @@ export async function getConsumptionStreaks(): Promise<Streak[]> {
     ORDER BY streak_start;
   `;
 
-    // use a Promise to handle the async database call
-    return new Promise((resolve, reject) => {
-        db.all(sql, [], (err: Error | null, rows: any[]) => {
-            if (err) {
-                console.error('Error in getConsumptionStreaks:', err.message);
-                reject(err);
-            } else {
-                resolve(rows);
-            }
-        });
+  // use a Promise to handle the async database call
+  return new Promise((resolve, reject) => {
+    db.all(sql, [], (err: Error | null, rows: any[]) => {
+      if (err) {
+        console.error('Error in getConsumptionStreaks:', err.message);
+        reject(err);
+      } else {
+        resolve(rows);
+      }
     });
+  });
 }
-
 
 /**
  * For each month, finds the day of the month
@@ -129,22 +128,27 @@ export async function getMonthlyMostEaten(): Promise<MonthlyMost[]> {
  * Adds a new meat bar consumption to the database.
  */
 export function addConsumption(
-  person_name: string, 
-  type: string, 
-  eaten_at: string
+  person_name: string,
+  type: string,
+  eaten_at: string,
 ): Promise<{ id: number }> {
-  const sql = 'INSERT INTO meat_bars (person_name, type, eaten_at) VALUES (?, ?, ?)';
-  
+  const sql =
+    'INSERT INTO meat_bars (person_name, type, eaten_at) VALUES (?, ?, ?)';
+
   return new Promise((resolve, reject) => {
     // Use function() to get 'this'
-    db.run(sql, [person_name, type, eaten_at], function(this: RunResult, err: Error | null) {
-      if (err) {
-        console.error('Error inserting meat bar:', err.message);
-        reject(err);
-      } else {
-        // Resolve with the ID of the new row
-        resolve({ id: this.lastID });
-      }
-    });
+    db.run(
+      sql,
+      [person_name, type, eaten_at],
+      function (this: RunResult, err: Error | null) {
+        if (err) {
+          console.error('Error inserting meat bar:', err.message);
+          reject(err);
+        } else {
+          // Resolve with the ID of the new row
+          resolve({ id: this.lastID });
+        }
+      },
+    );
   });
 }
