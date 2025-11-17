@@ -1,20 +1,20 @@
 # MeatBar Analytics Backend
 
-This is a Node.js, TypeScript, and SQLite backend API built as a technical assignment for Renaissance. The API provides RESTful endpoints to process and expose data about meat bar consumption.
 
 ## Tech Stack
 
 * **Backend:** Node.js, Express, TypeScript
 * **Database:** SQLite
 * **Testing:** Jest, ts-jest
+* **Code Quality:** ESLint, Prettier
 
 ## Demo
 
 ![GIF of DB set up from csv and API routes in Swagger](demo.gif)
 
-![GIF of unit testing](test.gif)
 
-## 🔗 Interactive Documentation
+
+## Documentation
 
 The full, interactive OpenAPI (Swagger) documentation is available at `http://localhost:3001/api-docs` after running the application.
 
@@ -73,11 +73,28 @@ If you prefer to run the application manually:
     ```
     The server will be running on `http://localhost:3001`
 
-4.  **Run Tests:**
+## Code Quality & Testing
+
+From the `server/` directory, you can run the following commands:
+
+* **Run all tests:**
     ```bash
-    # Run all tests
     npm run test
     ```
+
+* **Check for linting errors:**
+    ```bash
+    npm run lint
+    ```
+
+* **Automatically format all code:**
+    ```bash
+    npm run format
+    ```
+## Test
+
+![Unit Testing](test.gif)
+
 ## API Endpoints
 
 ### Health
@@ -98,45 +115,45 @@ If you prefer to run the application manually:
 * `POST /api/v1/consumptions`
     * Adds a new meat bar consumption event.
     * **Body (JSON):**
-    ```json
-    {
-      "person_name": "ashton",
-      "type": "bison",
-      "eaten_at": "2025-01-01T12:00:00.000Z"
-    }
-    ```
+        ```json
+        {
+          "person_name": "ashton",
+          "type": "bison",
+          "eaten_at": "2025-01-01T12:00:00.000Z"
+        }
+        ```
 
 ### Analytics
 
 * `GET /api/v1/analytics/streaks`
     * Returns all consumption streaks, defined as consecutive days (ignoring gaps) of *increasing* daily consumption.
     * **Example Response:**
-    ```json
-    [
-      {
-        "streak_id": 2,
-        "streak_length": 3,
-        "streak_start": "2015-01-03",
-        "streak_end": "2015-01-07",
-        "streak_counts": "1, 2, 3"
-      }
-    ]
-    ```
+        ```json
+        [
+          {
+            "streak_id": 2,
+            "streak_length": 3,
+            "streak_start": "2015-01-03",
+            "streak_end": "2015-01-07",
+            "streak_counts": "1, 2, 3"
+          }
+        ]
+        ```
 
 * `GET /api/v1/analytics/monthly-most`
     * For each month, returns the day of the month that had the highest number of consumptions.
     * **Example Response:**
-    ```json
-    [
-      {
-        "consumption_month": "2015-01",
-        "day_of_month": "15",
-        "daily_count": 8
-      },
-      {
-        "consumption_month": "2015-05",
-        "day_of_month": "01",
-        "daily_count": 3
-      }
-    ]
-    ```
+        ```json
+        [
+          {
+            "consumption_month": "2015-01",
+            "day_of_month": "15",
+            "daily_count": 8
+          },
+          {
+            "consumption_month": "2015-05",
+            "day_of_month": "01",
+            "daily_count": 3
+          }
+        ]
+        ```
