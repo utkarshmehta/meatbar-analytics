@@ -1,7 +1,6 @@
 # Stage 1: Build the TypeScript code
 FROM node:18-alpine AS builder
 
-# Set the working directory inside the container
 WORKDIR /app
 
 # Copy package files (for caching npm install)
@@ -16,7 +15,6 @@ COPY ./server/tsconfig.json ./server/
 COPY ./server/jest.config.js ./server/
 
 # Compile TypeScript into JavaScript
-# The 'build' script is defined in server/package.json
 RUN cd server && npm run build
 
 # Stage 2: Create the final, smaller runtime image
@@ -28,12 +26,14 @@ WORKDIR /app
 COPY --from=builder /app/server/package.json ./server/
 RUN cd server && npm install --omit=dev
 
-# Copy compiled JavaScript output and other files needed at runtime
+
+# Copy compiled JavaScript output
 COPY --from=builder /app/server/dist ./server/dist
+
+# Copy runtime assets
 COPY ./server/data ./server/data
-COPY ./server/src/database ./server/src/database
-COPY ./server/src/scripts ./server/src/scripts
-COPY ./server/tsconfig.json ./server/
+COPY ./server/swagger.yaml ./server/swagger.yaml
+
 
 # Set environment variable for Express port
 ENV PORT=3001
