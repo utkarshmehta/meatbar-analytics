@@ -18,10 +18,14 @@
     "dev": "nodemon",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "lint": "eslint \"src/**/*.ts\"",
+    "lint:fix": "eslint \"src/**/*.ts\" --fix"
   },
   "type": "commonjs",
   "dependencies": {
+    "chalk": "^4.1.2",
     "cors": "~2.8.5",
     "csv-parser": "~3.2.0",
     "express": "~5.1.0",
@@ -37,8 +41,14 @@
     "@types/sqlite3": "~3.1.11",
     "@types/swagger-ui-express": "~4.1.8",
     "@types/yamljs": "~0.2.34",
+    "@typescript-eslint/eslint-plugin": "^8.46.4",
+    "@typescript-eslint/parser": "^8.46.4",
+    "eslint": "^9.39.1",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.4",
     "jest": "~30.2.0",
     "nodemon": "~3.1.11",
+    "prettier": "^3.6.2",
     "ts-jest": "~29.4.5",
     "ts-node": "~10.9.2",
     "typescript": "~5.9.3"

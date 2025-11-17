@@ -1,18 +1,28 @@
 import sqlite3 from 'sqlite3';
 import path from 'path';
 
-// Get the path to the database file. 
-// __dirname is the current folder (src/database), 
-// so we go up two levels to the 'server' folder.
-const dbPath = path.resolve(__dirname, '../../database.db');
+// Use require for chalk to ensure Jest compatibility
+const chalk = require('chalk');
 
-// Use verbose mode for more detailed logs - utkarsh TODO
-const db = new sqlite3.Database(dbPath, (err) => {
-  if (err) {
-    console.error('Error opening database', err.message);
-  } else {
-    console.log('Connected to the SQLite database.');
-  }
-});
+let db: sqlite3.Database;
+
+// Check if Jest is running (Jest automatically sets this env variable)
+if (process.env.NODE_ENV === 'test') {
+  // If we are in a test, export a blank object.
+  // This stops any test from making a real database connection
+  // and fixes the "Cannot log after tests are done" error.
+  db = {} as sqlite3.Database;
+} else {
+  // This is the normal code that runs when you start your server
+  const dbPath = path.resolve(__dirname, '../../database.db');
+
+  db = new sqlite3.Database(dbPath, (err) => {
+    if (err) {
+      console.error(chalk.red('Error opening database'), err.message);
+    } else {
+      console.log(chalk.green('Connected to the SQLite database.'));
+    }
+  });
+}
 
 export default db;

@@ -1,6 +1,6 @@
-import { 
-  getConsumptionStreaks, 
-  addConsumption // --- Import new function
+import {
+  getConsumptionStreaks,
+  addConsumption,
 } from '../services/analytics.service';
 import db from '../database';
 
@@ -19,9 +19,15 @@ describe('Analytics Service: getConsumptionStreaks', () => {
 
   it('should correctly find a simple 2-day streak', async () => {
     const mockDbRows = [
-      { streak_id: 1, streak_length: 2, streak_start: '2025-01-01', streak_end: '2025-01-02', streak_counts: '1, 2' }
+      {
+        streak_id: 1,
+        streak_length: 2,
+        streak_start: '2025-01-01',
+        streak_end: '2025-01-02',
+        streak_counts: '1, 2',
+      },
     ];
-    
+
     mockedDb.all.mockImplementation((sql, params, callback) => {
       callback(null, mockDbRows);
       return db;
@@ -35,21 +41,23 @@ describe('Analytics Service: getConsumptionStreaks', () => {
 
   it('should return an empty array if no streaks are found', async () => {
     const mockDbRows: any[] = [];
-    
+
     mockedDb.all.mockImplementation((sql, params, callback) => {
       callback(null, mockDbRows);
       return db;
     });
 
     const streaks = await getConsumptionStreaks();
-    
+
     expect(streaks).toHaveLength(0);
   });
 
   it('should handle a database error without logging to console', async () => {
-    const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    const consoleErrorSpy = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => {});
     const mockError = new Error('SQLITE_ERROR');
-    
+
     mockedDb.all.mockImplementation((sql, params, callback) => {
       callback(mockError, []);
       return db;
@@ -78,9 +86,14 @@ describe('Analytics Service: addConsumption', () => {
     const mockRunResult = { lastID: 33 };
 
     // Tell the mock 'db.run' to succeed
-    mockedDb.run.mockImplementation(function(this: any, sql, params, callback) {
+    mockedDb.run.mockImplementation(function (
+      this: any,
+      sql,
+      params,
+      callback,
+    ) {
       // 'this' is bound to mockRunResult, 'callback' is called with no error
-      callback.call(mockRunResult, null); 
+      callback.call(mockRunResult, null);
       return db;
     });
 
@@ -91,7 +104,7 @@ describe('Analytics Service: addConsumption', () => {
     expect(mockedDb.run).toHaveBeenCalledWith(
       'INSERT INTO meat_bars (person_name, type, eaten_at) VALUES (?, ?, ?)',
       ['bob', 'bison', '2025-01-01'],
-      expect.any(Function)
+      expect.any(Function),
     );
     expect(result).toEqual({ id: 33 });
   });
@@ -99,16 +112,17 @@ describe('Analytics Service: addConsumption', () => {
   it('should reject if the database insert fails', async () => {
     // 1. Setup: Fake an error
     const mockError = new Error('SQLITE_CONSTRAINT');
-    
+
     mockedDb.run.mockImplementation((sql, params, callback) => {
       callback(mockError);
       return db;
     });
 
     // 2. Act & 3. Assert
-    await expect(addConsumption('bob', 'bison', '2025-01-01'))
-      .rejects.toThrow('SQLITE_CONSTRAINT');
-    
+    await expect(addConsumption('bob', 'bison', '2025-01-01')).rejects.toThrow(
+      'SQLITE_CONSTRAINT',
+    );
+
     // Also assert that error is logged
     expect(console.error).toHaveBeenCalled();
   });

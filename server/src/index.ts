@@ -2,11 +2,14 @@ import express, { Express, Request, Response } from 'express';
 import { Person, Consumption } from './types/models';
 import cors from 'cors';
 import db from './database';
-import { 
-  getConsumptionStreaks, 
-  getMonthlyMostEaten, 
-  addConsumption 
+import {
+  getConsumptionStreaks,
+  getMonthlyMostEaten,
+  addConsumption,
 } from './services/analytics.service';
+
+import chalk from 'chalk';
+
 // --- ADD SWAGGER IMPORTS ---
 import swaggerUi from 'swagger-ui-express';
 import YAML from 'yamljs';
@@ -28,7 +31,6 @@ const swaggerDocument = YAML.load(swaggerPath);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 // --- END SWAGGER SETUP ---
 
-
 // --- Routes ---
 /**
  * GET /
@@ -36,18 +38,42 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
  */
 app.get('/', (req: Request, res: Response) => {
   const ALL_ENDPOINTS = [
-    { method: 'GET', path: '/api/v1/people', description: 'Returns a list of all unique people.' },
-    { method: 'GET', path: '/api/v1/consumptions', description: 'Returns all consumption events.' },
-    { method: 'POST', path: '/api/v1/consumptions', description: 'Adds a new consumption event.' },
-    { method: 'GET', path: '/api/v1/analytics/streaks', description: 'Calculates consumption streaks.' },
-    { method: 'GET', path: '/api/v1/analytics/monthly-most', description: 'Finds the day with the most consumption per month.' },
-    { method: 'GET', path: '/api/v1/health', description: 'Checks server status.' },
+    {
+      method: 'GET',
+      path: '/api/v1/people',
+      description: 'Returns a list of all unique people.',
+    },
+    {
+      method: 'GET',
+      path: '/api/v1/consumptions',
+      description: 'Returns all consumption events.',
+    },
+    {
+      method: 'POST',
+      path: '/api/v1/consumptions',
+      description: 'Adds a new consumption event.',
+    },
+    {
+      method: 'GET',
+      path: '/api/v1/analytics/streaks',
+      description: 'Calculates consumption streaks.',
+    },
+    {
+      method: 'GET',
+      path: '/api/v1/analytics/monthly-most',
+      description: 'Finds the day with the most consumption per month.',
+    },
+    {
+      method: 'GET',
+      path: '/api/v1/health',
+      description: 'Checks server status.',
+    },
   ];
 
-  res.status(200).json({ 
-    message: "Welcome to the MeatBar Analytics API!",
+  res.status(200).json({
+    message: 'Welcome to the MeatBar Analytics API!',
     available_routes: ALL_ENDPOINTS,
-    documentation: "See /api-docs or README.md for full details."
+    documentation: 'See /api-docs or README.md for full details.',
   });
 });
 
@@ -72,7 +98,7 @@ app.get('/api/v1/people', (req: Request, res: Response) => {
       res.status(500).json({ error: 'Internal server error' });
       return;
     }
-    
+
     res.status(200).json(rows);
   });
 });
@@ -103,19 +129,19 @@ app.post('/api/v1/consumptions', async (req: Request, res: Response) => {
   const { person_name, type, eaten_at } = req.body;
 
   if (!person_name || !type || !eaten_at) {
-    return res.status(400).json({ 
-      error: 'Missing required fields: person_name, type, eaten_at' 
+    return res.status(400).json({
+      error: 'Missing required fields: person_name, type, eaten_at',
     });
   }
 
   try {
     const newConsumption = await addConsumption(person_name, type, eaten_at);
-    
+
     res.status(201).json({
       id: newConsumption.id,
       person_name: person_name,
       type: type,
-      eaten_at: eaten_at
+      eaten_at: eaten_at,
     });
   } catch (err) {
     res.status(500).json({ error: 'Internal server error' });
@@ -139,16 +165,25 @@ app.get('/api/v1/analytics/streaks', async (req: Request, res: Response) => {
  * GET /api/v1/analytics/monthly-most
  * For each month, returns the day with the most consumptions.
  */
-app.get('/api/v1/analytics/monthly-most', async (req: Request, res: Response) => {
-  try {
-    const monthlyMost = await getMonthlyMostEaten();
-    res.status(200).json(monthlyMost);
-  } catch (err) {
-    res.status(500).json({ error: 'Internal server error' });
-  }
-});
+app.get(
+  '/api/v1/analytics/monthly-most',
+  async (req: Request, res: Response) => {
+    try {
+      const monthlyMost = await getMonthlyMostEaten();
+      res.status(200).json(monthlyMost);
+    } catch (err) {
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  },
+);
 
 // --- Start the Server ---
 app.listen(PORT, () => {
-  console.log(`Server is running. Check health at http://localhost:${PORT}/api/v1/health`);
+  console.log(chalk.bold.green(`\nServer is running on port ${PORT}`));
+  console.log(
+    `  ${chalk.bold('Health Check:')} ${chalk.cyan(`http://localhost:${PORT}/api/v1/health`)}`,
+  );
+  console.log(
+    `  ${chalk.bold('API Docs:')}     ${chalk.cyan(`http://localhost:${PORT}/api-docs`)}\n`,
+  );
 });

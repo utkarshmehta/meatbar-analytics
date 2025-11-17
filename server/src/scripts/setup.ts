@@ -60,9 +60,13 @@ function populateDatabase() {
 }
 
 function insertData() {
-  const personStmt = db.prepare('INSERT OR IGNORE INTO people (name) VALUES (?)');
+  const personStmt = db.prepare(
+    'INSERT OR IGNORE INTO people (name) VALUES (?)',
+  );
   // ---'INSERT OR IGNORE' ---
-  const meatBarStmt = db.prepare('INSERT OR IGNORE INTO meat_bars (person_name, type, eaten_at) VALUES (?, ?, ?)');
+  const meatBarStmt = db.prepare(
+    'INSERT OR IGNORE INTO meat_bars (person_name, type, eaten_at) VALUES (?, ?, ?)',
+  );
 
   let peopleInserted = 0;
   let barsInserted = 0;
@@ -73,13 +77,18 @@ function insertData() {
     const eatenAt = row['date'];
 
     if (personName && meatBarType && eatenAt) {
-      personStmt.run(personName, function(this: RunResult) {
+      personStmt.run(personName, function (this: RunResult) {
         if (this.changes > 0) peopleInserted++;
       });
-      
-      meatBarStmt.run(personName, meatBarType, eatenAt, function(this: RunResult) {
-        if (this.changes > 0) barsInserted++;
-      });
+
+      meatBarStmt.run(
+        personName,
+        meatBarType,
+        eatenAt,
+        function (this: RunResult) {
+          if (this.changes > 0) barsInserted++;
+        },
+      );
     }
   }
 
@@ -88,7 +97,9 @@ function insertData() {
     if (err) {
       return console.error('Error finalizing meatBarStmt', err.message);
     }
-    console.log(`Data insertion complete: ${peopleInserted} unique people, ${barsInserted} meat bars.`);
+    console.log(
+      `Data insertion complete: ${peopleInserted} unique people, ${barsInserted} meat bars.`,
+    );
 
     db.close((err) => {
       if (err) {
