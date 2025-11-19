@@ -134,6 +134,14 @@ app.post('/api/v1/consumptions', async (req: Request, res: Response) => {
     });
   }
 
+  const dateValue = Date.parse(eaten_at);
+  if (isNaN(dateValue)) {
+     return res.status(400).json({
+      error: 'Invalid date format. Please use ISO-8601 (e.g. 2025-01-15T00:00:00Z)',
+    });
+  }
+
+
   try {
     const newConsumption = await addConsumption(person_name, type, eaten_at);
 

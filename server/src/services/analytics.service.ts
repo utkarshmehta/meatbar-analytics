@@ -126,29 +126,41 @@ export async function getMonthlyMostEaten(): Promise<MonthlyMost[]> {
 
 /**
  * Adds a new meat bar consumption to the database.
+ * Also ensures the person exists in the people table.
  */
 export function addConsumption(
   person_name: string,
   type: string,
   eaten_at: string,
 ): Promise<{ id: number }> {
-  const sql =
-    'INSERT INTO meat_bars (person_name, type, eaten_at) VALUES (?, ?, ?)';
-
   return new Promise((resolve, reject) => {
-    // Use function() to get 'this'
-    db.run(
-      sql,
-      [person_name, type, eaten_at],
-      function (this: RunResult, err: Error | null) {
-        if (err) {
-          console.error('Error inserting meat bar:', err.message);
-          reject(err);
-        } else {
-          // Resolve with the ID of the new row
-          resolve({ id: this.lastID });
-        }
-      },
-    );
+    // 1. First, ensure the person exists in the 'people' table
+    // INSERT OR IGNORE will add them if they are new, or do nothing if they exist.
+    const insertPersonSql = 'INSERT OR IGNORE INTO people (name) VALUES (?)';
+
+    db.run(insertPersonSql, [person_name], (err: Error | null) => {
+      if (err) {
+        console.error('Error ensuring person exists:', err.message);
+        return reject(err);
+      }
+
+      // 2. Then, insert the consumption record
+      const insertConsumptionSql =
+        'INSERT INTO meat_bars (person_name, type, eaten_at) VALUES (?, ?, ?)';
+
+      db.run(
+        insertConsumptionSql,
+        [person_name, type, eaten_at],
+        function (this: RunResult, err: Error | null) {
+          if (err) {
+            console.error('Error inserting meat bar:', err.message);
+            reject(err);
+          } else {
+            // Resolve with the ID of the new row
+            resolve({ id: this.lastID });
+          }
+        },
+      );
+    });
   });
 }

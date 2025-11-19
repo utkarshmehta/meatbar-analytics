@@ -82,30 +82,43 @@ describe('Analytics Service: addConsumption', () => {
   });
 
   it('should resolve with the new ID on successful insert', async () => {
-    // 1. Setup: Define the fake 'this' context the mock will have
+    // 1. Setup
     const mockRunResult = { lastID: 33 };
 
-    // Tell the mock 'db.run' to succeed
+    // Tell the mock to succeed for BOTH calls (person insert and consumption insert)
     mockedDb.run.mockImplementation(function (
       this: any,
       sql,
       params,
       callback,
     ) {
-      // 'this' is bound to mockRunResult, 'callback' is called with no error
       callback.call(mockRunResult, null);
       return db;
     });
 
-    // 2. Act: Call the function
+    // 2. Act
     const result = await addConsumption('bob', 'bison', '2025-01-01');
 
-    // 3. Assert: Check that the correct SQL was called and the ID is returned
-    expect(mockedDb.run).toHaveBeenCalledWith(
+    // 3. Assert
+    // Verify db.run was called twice
+    expect(mockedDb.run).toHaveBeenCalledTimes(2);
+
+    // Verify the FIRST call was to create the person
+    expect(mockedDb.run).toHaveBeenNthCalledWith(
+      1,
+      'INSERT OR IGNORE INTO people (name) VALUES (?)',
+      ['bob'],
+      expect.any(Function)
+    );
+
+    // Verify the SECOND call was to add consumption
+    expect(mockedDb.run).toHaveBeenNthCalledWith(
+      2,
       'INSERT INTO meat_bars (person_name, type, eaten_at) VALUES (?, ?, ?)',
       ['bob', 'bison', '2025-01-01'],
-      expect.any(Function),
+      expect.any(Function)
     );
+
     expect(result).toEqual({ id: 33 });
   });
 
@@ -113,17 +126,16 @@ describe('Analytics Service: addConsumption', () => {
     // 1. Setup: Fake an error
     const mockError = new Error('SQLITE_CONSTRAINT');
 
-    mockedDb.run.mockImplementation((sql, params, callback) => {
-      callback(mockError);
-      return db;
-    });
+    // Fail on the second call (the consumption insert)
+    mockedDb.run
+      .mockImplementationOnce((sql, params, cb) => cb(null)) // First call succeeds (person)
+      .mockImplementationOnce((sql, params, cb) => cb(mockError)); // Second call fails
 
     // 2. Act & 3. Assert
     await expect(addConsumption('bob', 'bison', '2025-01-01')).rejects.toThrow(
       'SQLITE_CONSTRAINT',
     );
 
-    // Also assert that error is logged
     expect(console.error).toHaveBeenCalled();
   });
 });
