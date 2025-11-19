@@ -104,6 +104,11 @@ From the `server/` directory, you can run the following commands:
 - Time Zone Handling: All date and time fields (eaten_at) are stored and queried using standard SQLite date functions based on the raw UTC text string from the source data.
 
 - Consumption Streaks: The streak calculation strictly ignores any days with zero consumption, as required by the business logic.
+
+- Implicit Person Creation: The POST /consumptions endpoint assumes that if a person_name does not currently exist in the database, it should be automatically created. This prevents data integrity issues where consumption records could become orphaned.
+
+- Strict Date Validation: The API assumes strict ISO-8601 date formats (e.g., 2025-01-15T00:00:00.000Z) for data consistency. Invalid dates (like month "15") are rejected with a 400 error to prevent analytics failures.
+
 ## Testing DEMO
 
 ![Unit Testing](test.gif)
