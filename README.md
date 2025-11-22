@@ -175,5 +175,18 @@ From the `server/` directory, you can run the following commands:
           }
         ]
 
+## 🔌 MCP Integration
+
+This project includes a Model Context Protocol (MCP) server that provides analytics capabilities to Claude AI. The MCP server enables Claude to interact with the meat consumption tracking data directly.
+
+**Current Capabilities:**
+- `get_all_users` - Retrieves a list of all unique users in the system
+- `add_consumption` - Adds new meat consumption records
+
+**Example Usage:**
+When you ask Claude "Can you get me the count of all unique users?", it uses the MCP server to fetch and count users, returning results like: 6 unique users (ashley, ashton, bob, chuck, etc.)
+
+![MCP Demo](mcp_demo.gif)  
+
         ```
 
