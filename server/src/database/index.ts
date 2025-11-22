@@ -20,7 +20,7 @@ if (process.env.NODE_ENV === 'test') {
     if (err) {
       console.error(chalk.red('Error opening database'), err.message);
     } else {
-      console.log(chalk.green('Connected to the SQLite database.'));
+      console.error(chalk.green('Connected to the SQLite database.'));
     }
   });
 }
