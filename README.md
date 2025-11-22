@@ -174,7 +174,7 @@ From the `server/` directory, you can run the following commands:
             "daily_count": 3
           }
         ]
-
+        ```
 ## 🔌 MCP Integration
 
 This project includes a Model Context Protocol (MCP) server that provides analytics capabilities to Claude AI. The MCP server enables Claude to interact with the meat consumption tracking data directly.
@@ -188,5 +188,5 @@ When you ask Claude "Can you get me the count of all unique users?", it uses the
 
 ![MCP Demo](mcp_demo.gif)  
 
-        ```
+
 
