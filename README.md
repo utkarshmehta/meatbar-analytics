@@ -177,7 +177,7 @@ From the `server/` directory, you can run the following commands:
         ```
 ## 🔌 MCP Integration(WIP)
 
-This project includes a Model Context Protocol (MCP) server that provides analytics capabilities to Claude AI. The MCP server enables Claude to interact with the meat consumption tracking data directly.
+This project includes a Model Context Protocol (MCP) server that provides analytics capabilities to Claude AI. The MCP (_mimiced_) server enables Claude to interact with the meat consumption tracking data directly.
 
 **Current Capabilities:**
 - `get_all_users` - Retrieves a list of all unique users in the system
