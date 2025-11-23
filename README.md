@@ -175,7 +175,7 @@ From the `server/` directory, you can run the following commands:
           }
         ]
         ```
-## 🔌 MCP Integration
+## 🔌 MCP Integration(WIP)
 
 This project includes a Model Context Protocol (MCP) server that provides analytics capabilities to Claude AI. The MCP server enables Claude to interact with the meat consumption tracking data directly.
 
