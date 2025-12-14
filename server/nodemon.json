@@ -1,0 +1,7 @@
+{
+  "watch": ["src", "swagger.yaml"],
+  "ext": "ts,json,yaml",
+  "ignore": ["src/**/*.test.ts", "dist/", "node_modules/"],
+  "exec": "ts-node src/index.ts",
+  "transpileOnly": true
+}
