@@ -164,3 +164,21 @@ export function addConsumption(
     });
   });
 }
+
+/**
+ * Retrieves a list of all unique user names from the people table.
+ */
+export function getAllUsers(): Promise<string[]> {
+  return new Promise((resolve, reject) => {
+    const sql = 'SELECT name FROM people ORDER BY name ASC';
+    db.all(sql, [], (err: Error | null, rows: any[]) => {
+      if (err) {
+        console.error('Error getting all users:', err.message);
+        reject(err);
+      } else {
+        const names = rows.map((row) => row.name);
+        resolve(names);
+      }
+    });
+  });
+}
